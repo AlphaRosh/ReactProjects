@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 class Clock extends Component {
   constructor(props) {
@@ -19,9 +21,29 @@ class Clock extends Component {
   }
   render() {
     return (
-      <div>
-        <h3>It is {this.state.date.toLocaleTimeString()}</h3>
-      </div>
+      <>
+        <Card>
+          <Card.Header className='text-center mb-4 font-weight-bold'>
+            Current Time
+          </Card.Header>
+          <Card.Body>
+            <Card.Title className='mb-4 text-lg-center'>
+              {this.state.date.toLocaleTimeString()}
+            </Card.Title>
+            <Card.Subtitle className='mb-2  text-muted text-center'>
+              Kalyan(west)
+            </Card.Subtitle>
+          </Card.Body>
+          <Card.Footer>
+            <div className='w-100 text-center mt-2'>
+              Already have an Account? <Link to='/login'>Log In</Link>
+            </div>
+            <div className='w-100 text-center mt-2'>
+              Need a new account? <Link to='/signup'>Sign Up</Link>
+            </div>
+          </Card.Footer>
+        </Card>
+      </>
     );
   }
 }
