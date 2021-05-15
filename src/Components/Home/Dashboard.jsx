@@ -8,6 +8,7 @@ export default function Dashboard() {
   const history = useHistory();
   //Destructuring
   const { currentUser, logout } = useAuth();
+  console.log(currentUser)
   //Logout Logic
   async function handleLogout() {
     setError("");
@@ -32,8 +33,11 @@ export default function Dashboard() {
           <Card.Subtitle className='mb-2  text-muted text-center'>
             Kalyan(west)
           </Card.Subtitle>
-          <Link to='/details' className='btn btn-primary w-100 mt-3'>
+          {/* <Link to='/details' className='btn btn-primary w-100 mt-3'>
             Details
+          </Link> */}
+          <Link to='/update-profile' className='btn btn-primary w-100 mt-3'>
+            Update Profile
           </Link>
         </Card.Body>
         <Card.Footer>

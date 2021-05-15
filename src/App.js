@@ -6,9 +6,13 @@ import Clock from "./Components/common/Clock.jsx";
 // import { ThemeProvider } from "./Components/common/Theme/ThemeContext.jsx";
 import SignUp from "./Components/common/Auth/SignUp.jsx";
 import LogIn from "./Components/common/Auth/LogIn.jsx";
+import ForgotPassword from "./Components/common/Auth/ForgotPassword.jsx";
+import UpdateProfile from "./Components/common/Auth/UpdateProfile.jsx";
 import Dashboard from "./Components/Home/Dashboard.jsx";
-import { Container } from "react-bootstrap";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import PrivateRoute from "./Components/PrivateRoute.jsx";
+import { Container } from "react-bootstrap";
+
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 function App() {
@@ -21,10 +25,12 @@ function App() {
         <Router>
           <AuthProvider>
             <Switch>
-              <Route exact path="/" component={Clock}/>
+              <Route exact path='/' component={Clock} />
               <Route path='/signup' component={SignUp} />
               <Route path='/login' component={LogIn} />
-              <Route path='/dashboard'  component={Dashboard}/>
+              <Route path='/forgot-password' component={ForgotPassword} />
+              <PrivateRoute path='/dashboard' component={Dashboard} />
+              <PrivateRoute path='/update-profile' component={UpdateProfile} />
             </Switch>
           </AuthProvider>
         </Router>

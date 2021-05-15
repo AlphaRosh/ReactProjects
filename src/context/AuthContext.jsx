@@ -25,6 +25,20 @@ export function AuthProvider({ children }) {
   function logout() {
     return auth.signOut();
   }
+
+  //Reset Password logic
+  function resetPassword(email) {
+    return auth.sendPasswordResetEmail(email);
+  }
+
+  //Update Email Logic
+  function updateEmail(email) {
+    return currentUser.updateEmail(email);
+  }
+  //Update Password Logic
+  function updatePassword(password) {
+    return currentUser.updatePassword(password);
+  }
   //login for after component did mount , will Unmount , did Update
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -39,6 +53,9 @@ export function AuthProvider({ children }) {
     register,
     login,
     logout,
+    resetPassword,
+    updateEmail,
+    updatePassword
   };
   return (
     <>

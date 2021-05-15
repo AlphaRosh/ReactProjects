@@ -3,46 +3,70 @@ import { Button, Card, Form, FormGroup, Alert } from "react-bootstrap";
 import { useAuth } from "../../../context/AuthContext";
 import { Link, useHistory } from "react-router-dom";
 
-const SignUp = () => {
+const UpdateProfile = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
-  const { register, currentUser } = useAuth();
+  const {currentUser, updateEmail, updatePassword } = useAuth();
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   //Condition Constants
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
+    e.preventDefault();
+
     const passwordMismatchTrue =
       passwordRef.current.value !== passwordConfirmRef.current.value;
-    e.preventDefault();
     if (passwordMismatchTrue) {
       return setError("Password do not Match");
     }
-    try {
-      setError(""); //resetting the error log
-      setLoading(true); //setting the loading as true to prevent mis click
-      await register(emailRef.current.value, passwordRef.current.value);
-      history.push("/dashboard");
-    } catch (error) {
-      
-      setError(error.message);
+
+    const promises = [];
+    setError("");
+    setMessage("");
+    setLoading(true);
+    if (emailRef.current.value !== currentUser.email) {
+      promises.push(updateEmail(emailRef.current.value));
     }
-    setLoading(false); // resetting the loading state.
+    if (passwordRef.current.value) {
+      promises.push(updatePassword(passwordRef.current.value));
+    }
+    Promise.all(promises)
+      .then(() => {
+        setMessage("Updated Successfully");
+      })
+      .catch((error) => {
+        setError(error.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   return (
     <>
       <Card>
         <Card.Header className='text-center mb-4 font-weight-bold'>
-          Sign Up
+          Update Profile
         </Card.Header>
         <Card.Body>
-          {error && <Alert variant='danger'>
-            <Alert.Heading>Failed to register user</Alert.Heading>
-            <p>{error}</p>
-          </Alert>}
+          {error && (
+            <Alert variant='danger'>
+              <Alert.Heading>Failed to Update user</Alert.Heading>
+              <p>{error}</p>
+            </Alert>
+          )}
+          {message && (
+            <div>
+              <Alert variant='success'>
+                <Alert.Heading>Success</Alert.Heading>
+                <p>{message}</p>
+              </Alert>
+              <Button onClick={()=>history.push("/dashboard")}>Go To Dashboard</Button>
+            </div>
+          )}
           <Form onSubmit={handleSubmit}>
             <Form.Group className='mb-3' id='email'>
               <Form.Label>Email</Form.Label>
@@ -50,6 +74,7 @@ const SignUp = () => {
                 type='email'
                 placeholder='Enter Email'
                 ref={emailRef}
+                defaultValue={currentUser.email}
                 required
               />
             </Form.Group>
@@ -57,18 +82,16 @@ const SignUp = () => {
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type='password'
-                placeholder='Enter Password'
+                placeholder='Leave blank if you do not want to Update Password'
                 ref={passwordRef}
-                required
               />
             </Form.Group>
             <Form.Group className='mb-3' id='passwordConfirm'>
               <Form.Label>Confirm Password</Form.Label>
               <Form.Control
                 type='password'
-                placeholder='Confirm Password'
+                placeholder='Leave blank if you do not want to Update Password'
                 ref={passwordConfirmRef}
-                required
               />
             </Form.Group>
             <Button
@@ -77,16 +100,13 @@ const SignUp = () => {
               type='submit'
               className='w-100'
             >
-              Submit
+              Update
             </Button>
           </Form>
         </Card.Body>
         <Card.Footer>
           <div className='w-100 text-center mt-2'>
-            Already have an Account? <Link to='/login'>Log In</Link>
-          </div>
-          <div className='w-100 text-center mt-2'>
-            <Link to='/'>Home</Link>
+            <Link to='/dashboard'>Dashboard</Link>
           </div>
         </Card.Footer>
       </Card>
@@ -94,4 +114,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default UpdateProfile;

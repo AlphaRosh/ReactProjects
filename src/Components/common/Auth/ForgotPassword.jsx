@@ -1,29 +1,27 @@
 import React, { useRef, useState } from "react";
 import { Button, Card, Form, FormGroup, Alert } from "react-bootstrap";
 import { useAuth } from "../../../context/AuthContext";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const LogIn = () => {
   const emailRef = useRef();
-  const passwordRef = useRef();
-  const { login, currentUser } = useAuth();
+  const { resetPassword, currentUser } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
+  const [message, setMessage] = useState("");
 
   //Condition Constants
 
-  async function handleSubmit(e) {
+  async function handleRestPassword(e) {
     e.preventDefault();
 
     try {
+      setMessage("");
       setError(""); //resetting the error log
       setLoading(true); //setting the loading as true to prevent mis click
-      await login(emailRef.current.value, passwordRef.current.value);
-      console.log(currentUser)
-      history.push("/dashboard");
+      await resetPassword(emailRef.current.value);
+      setMessage(`Please check your email ${emailRef.current.value} for the reset password link`);
     } catch (error) {
-       
       setError(error.message);
     }
     setLoading(false); // resetting the loading state.
@@ -33,16 +31,23 @@ const LogIn = () => {
     <>
       <Card>
         <Card.Header className='text-center mb-4 font-weight-bold'>
-          Log In
+          Password Reset
         </Card.Header>
         <Card.Body>
-          {error && <Alert variant='danger'>
-            <Alert.Heading>Failed To Login</Alert.Heading>
-            <p>{error}</p>
-            
-          </Alert>}
+          {error && (
+            <Alert variant='danger'>
+              <Alert.Heading>Failed to Reset Password</Alert.Heading>
+              <p>{error}</p>
+            </Alert>
+          )}
+          {message && (
+            <Alert variant='success'>
+              <Alert.Heading>Reset Link sent</Alert.Heading>
+              <p>{message}</p>
+            </Alert>
+          )}
 
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleRestPassword}>
             <Form.Group className='mb-3' id='email'>
               <Form.Label>Email</Form.Label>
               <Form.Control
@@ -52,26 +57,18 @@ const LogIn = () => {
                 required
               />
             </Form.Group>
-            <Form.Group className='mb-3' id='password'>
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type='password'
-                placeholder='Enter Password'
-                ref={passwordRef}
-                required
-              />
-            </Form.Group>
+
             <Button
               disabled={loading}
               variant='primary'
               type='submit'
               className='w-100'
             >
-              Log In
+              Reset Password
             </Button>
           </Form>
           <div className='w-100 text-center mt-3'>
-            <Link to='/forgot-password'>Forgot Password?</Link>
+            <Link to='/login'>Log In</Link>
           </div>
         </Card.Body>
         <Card.Footer>
